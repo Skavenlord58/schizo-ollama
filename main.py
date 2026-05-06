@@ -86,7 +86,7 @@ async def on_message(message):
             r = requests.post(OLLAMA_URL, json=payload, timeout=120)
             r.raise_for_status()
             reply = r.json()["message"]["content"]
-            reply_clean = reply.replace("@everyone").replace("@nikdo")
+            reply_clean = reply.replace("@", "'nice try, pičo'")
             print(f"Got a reply!")
             await message.channel.send(reply_clean)
 
