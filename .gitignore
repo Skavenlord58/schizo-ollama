@@ -1,3 +1,5 @@
 bottoken.py
 .env
 .pycache
+__pycache__
+botsettings.py

@@ -57,3 +57,24 @@ python3 ./main.py
 ## Interacting with the bot
 - The bot will respond if you tag him directly, or reply to his message.
 - The script can be modified to have more function, but this is on somebody else.
+
+## Modifying the system prompt from elsewhere:
+- Due to the politically incorrect or sensitive kind of information, you are going to provide the bot to personalize him, I gitignored the file "botsettings.py" from where I get the additional configs to the system prompt
+- Provide this file and fill in your personalisations:
+```py
+# botsettings.py
+ADDITIONAL_FLAVOUR = """
+"""
+
+ADDITIONAL_LIKES = """
+"""
+
+ADDITIONAL_RULES = """
+"""
+
+ADDITIONAL_PEOPLE = """
+"""
+
+ADDITIONAL_RP = """
+"""
+```
