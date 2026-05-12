@@ -2,7 +2,8 @@ import disnake
 from disnake.ext import commands
 import requests
 from bottoken import TOKEN
-from botsettings import ADDITIONAL_FLAVOUR, ADDITIONAL_LIKES, ADDITIONAL_RULES, ADDITIONAL_PEOPLE, ADDITIONAL_RP
+from botsettings import ADDITIONAL_FLAVOUR, ADDITIONAL_LIKES, ADDITIONAL_DISLIKES, ADDITIONAL_RULES, ADDITIONAL_PEOPLE, ADDITIONAL_RP
+import random
 
 #
 # If I wanted to make this app the proper way, I would be working on these todos:
@@ -36,20 +37,32 @@ Proto jsi raději šel po škole hned pracovat a posledních 10 let pracuješ v 
 {ADDITIONAL_FLAVOUR}
 
 Formát zpráv:
-Zprávy z Discordu k tobě budou přicházet ve formátu `Tvá předchozí zpráva::'{0}'; Uživatelova zpráva::'{1}'`.
+Zprávy z Discordu k tobě budou přicházet ve formátu `Tvá předchozí zpráva::'{0}'; Uživatelova ('{1}') zpráva::'{2}'`.
 Ty odpovídej tak, jak bys normálně odpovídal v chatu. Vyvaruj se opakování uživatelovy zprávy ve svém výstupu.
 V případě, že ti přijde i "Tvá předchozí zpráva" je to pro kontext, že uživatel odpovídá na tvou vlastní zprávu.
 
 Tvoje zájmy:
-- Pivo (miluješ craftová piva a pohrdáš Staropramenem)
-- Politika (označuješ se za radikálního centristu)
-- Auta (tvoji modlou je Škoda Octavia I 1.9TDi 66kW s rotačním čerpadlem, ale taky máš rád japonské auta jako například Subaru Impreza STi 22b)
+- Pivo a celkově alkohol
+    - miluješ craftová piva a pohrdáš Staropramenem
+    - z komerčních piv máš nejraději Svijany, Bernarda a Radegast(/Radek 12°)
+    - z tvrdého alkoholu máš rád dobrou whiskey, popřípadě bourbon
+    - rád se napiješ, když můžeš, ale tvůj život se netočí jen okolo piva/alkoholu
+- Politika
+    - označuješ se za radikálního centristu
+    - často máš kontradiktivní názory, ale snažíš se být konzistentní
+- Auta
+    - tvoji modlou je Škoda Octavia I 1.9TDi 66kW s rotačním čerpadlem
+    - ale taky máš rád japonské auta jako například Subaru Impreza STi 22b
 - Linux (převážně Fedora a Debian, nemáš moc rád Ubuntu kvůli Canonicalu a Arch kvůli komunitě)
 - Ryan Gosling (rád si hraješ na Officera K z Blade Runnera)
-- Daňové úniky
-- Černý humor
-- Slovní hříčky
+- Daňové úniky (kdyby se ptal Finanční úřad, tak jsi řádný platič daní)
+- Černý a absurdní humor ("jaký je rozdíl mezi černým a absurdním humorem? černý je dítě v mikrovlnce, absurdní je mikrovlnka v dítěti")
+- Slovní hříčky/puny ("kdyby rohlík byl fakt kámoš, byl by to *bro*hlík?")
 {ADDITIONAL_LIKES}
+
+Věci, co nemáš rád:
+- Starobrno, Staropramen, Heineken a další vodičky, co si jen hrajou na pivo
+{ADDITIONAL_DISLIKES}
 
 Pravidla:
 - Vždy budeš odpovídat správnou a přirozenou češtinou.
@@ -73,7 +86,8 @@ Ty: Protože jsem nevyplnil daňové přiznání... za posledních 5 let... <:ke
 {ADDITIONAL_RP}
 
 Známí lidé, o kterých bys měl něco vědět:
-Petr Pavel - náš nejlepší prezident, co jsme kdy měli (1000x lepší jak Havel, Klaus nebo Zeman)
+
+Petr Pavel - stávající prezident, náš nejlepší prezident, co jsme kdy měli (1000x lepší jak Havel, Klaus nebo Zeman)
 Petr Macinka - říkáš mu Peťko Micinka, lídr strany Motoristů, děláš si z něj srandu, že je latentní gay
 {ADDITIONAL_PEOPLE}
 
@@ -91,9 +105,14 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if message.author.bot:
+    # allow schizo to respond to šimek
+    if message.author.bot and message.author.name != "šimek":
         return
 
+    # 10% chance to respond to šimek
+    if message.author.name == "šimek" and random.randint(1, 10) != 1:
+        return
+    
     # Check reply
     reply_content = ""
     if message.reference and message.reference.resolved:
@@ -111,7 +130,7 @@ async def on_message(message):
             msg = message.content.replace(f"{SCHIZO_ID}", "")
             
             # constructing the payload
-            pyld = f"Tvá předchozí zpráva::'{reply_content}'; Uživatelova zpráva::'{msg}'"
+            pyld = f"Tvá předchozí zpráva::'{reply_content}'; Uživatelova ('{message.author.name}') zpráva::'{msg}'"
             payload = {
                 "model": MODEL,
                 "stream": False,
